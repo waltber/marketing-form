@@ -2,85 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Marketing Form</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f7fa;
+      font-family: sans-serif;
+      background: #f5f7fa;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      margin: 0;
     }
     .form-container {
-      background: #fff;
+      background: white;
       padding: 2rem;
       border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       width: 100%;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
+      max-width: 400px;
     }
     label {
-      font-weight: 500;
+      display: block;
+      margin-top: 1rem;
     }
     input, button {
       width: 100%;
       padding: 0.75rem;
       margin-top: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
     }
     button {
-      background: #007BFF;
-      color: #fff;
+      background-color: #007BFF;
+      color: white;
       border: none;
       cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .checkbox {
-      display: flex;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
-    .checkbox input {
-      width: auto;
-      margin-right: 10px;
-      margin-top: 6px;
     }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <h2>Subscribe to Our Marketing List</h2>
-    <form name="marketing" method="POST" data-netlify="true">
+    <h2>Subscribe</h2>
+    <form name="marketing" action="https://formsubmit.co/youremail@example.com" method="POST">
+      <input type="hidden" name="_captcha" value="false">
+
       <label for="firstName">First Name</label>
-      <input type="text" id="firstName" name="firstName" required>
+      <input type="text" name="firstName" id="firstName" required>
 
       <label for="lastName">Last Name</label>
-      <input type="text" id="lastName" name="lastName" required>
+      <input type="text" name="lastName" id="lastName" required>
 
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" required>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required>
 
-      <div class="checkbox">
-        <input type="checkbox" id="marketingConsent" name="marketingConsent" required>
-        <label for="marketingConsent">
-          I agree to receive promotional emails and marketing content related to products, services, and special offers.
-        </label>
-      </div>
+      <label>
+        <input type="checkbox" name="marketingConsent" id="marketingConsent" required>
+        I agree to receive marketing information
+      </label>
 
       <button type="submit">Subscribe</button>
     </form>
   </div>
+
+  <!-- 🔐 Securiti Form Consent SDK -->
+  <script src='https://cdn-prod.securiti.ai/consent/form-consent-sdk.js'></script>
+  <script>
+    window.addEventListener('load', function () {
+      FormConsentSDK.initialize({
+        codeGenMetadata: {
+          formPropertyId: "2",
+          formSelector: "[name*=\"marketing\"]",
+          subjectIdentifiers: [
+            {
+              name: "First Name",
+              selector: "[name = \"firstName\"]",
+              isPrimary: false
+            },
+            {
+              name: "Last Name",
+              selector: "[name = \"lastName\"]",
+              isPrimary: false
+            },
+            {
+              name: "Email Address",
+              selector: "[name = \"email\"]",
+              isPrimary: true
+            }
+          ],
+          consentIdentifiers: [
+            {
+              type: "checkbox",
+              name: "marketingConsent",
+              selector: "[name = \"marketingConsent\"]",
+              propertyId: 8608,
+              consentValue: "checked"
+            }
+          ],
+          consentTrigger: {
+            action: "submit",
+            selector: ""
+          }
+        },
+        url: 'https://app.securiti.ai/privaci/v1/',
+        authToken: '139d71cf-2f03-42ef-a77a-050028cc390a',
+        orgId: '1',
+        onConsentSuccess: null,
+        onConsentFailure: null
+      });
+    });
+  </script>
 </body>
 </html>
