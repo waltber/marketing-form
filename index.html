@@ -46,7 +46,7 @@
 <body>
   <div class="form-container">
     <h2>Subscribe</h2>
-    <form id="formMarketing" name="marketing" action="https://formsubmit.co/walter.bertelli@gmail.com" method="POST">
+    <form id="formMarketing" name="marketing">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="https://aquamarine-dolphin-13fd0f.netlify.app/thanks.html">
 
@@ -71,47 +71,49 @@
   <!-- Securiti Consent SDK -->
   <script src="https://cdn-prod.securiti.ai/consent/form-consent-sdk.js"></script>
   <script>
-    let sdkReady = false;
-
     window.addEventListener('load', function () {
-      const form = document.getElementById('formMarketing');
+      const form = document.getElementById("formMarketing");
 
-      // 1. Inicializa o SDK assim que a página carregar
       FormConsentSDK.initialize({
         codeGenMetadata: {
           formPropertyId: "3",
-          formSelector: "[name*=\"marketing\"]",
+          formSelector: "[name=\"marketing\"]",
           subjectIdentifiers: [
-            { name: "First Name", selector: "[name = \"firstName\"]", isPrimary: false },
-            { name: "Last Name", selector: "[name = \"lastName\"]", isPrimary: false },
-            { name: "Email", selector: "[name = \"email\"]", isPrimary: true }
+            { name: "First Name", selector: "[name=\"firstName\"]", isPrimary: false },
+            { name: "Last Name", selector: "[name=\"lastName\"]", isPrimary: false },
+            { name: "Email", selector: "[name=\"email\"]", isPrimary: true }
           ],
           consentIdentifiers: [
-            { type: "checkbox", name: "marketingConsent", selector: "[name = \"marketingConsent\"]", propertyId: 8609, consentValue: "checked" }
+            {
+              type: "checkbox",
+              name: "marketingConsent",
+              selector: "[name=\"marketingConsent\"]",
+              propertyId: 8609,
+              consentValue: "checked"
+            }
           ],
-          consentTrigger: { action: "submit", selector: "" }
+          consentTrigger: {
+            action: "submit" // 🔥 sem selector vazio aqui!
+          }
         },
         url: 'https://app.securiti.ai/privaci/v1/',
         authToken: '139d71cf-2f03-42ef-a77a-050028cc390a',
         orgId: '1',
         onConsentSuccess: function () {
-          sdkReady = true;
-          form.submit(); // envia para Formsubmit só depois do sucesso
+          console.log("✅ Consentimento OK, enviando para Formsubmit");
+          form.setAttribute("action", "https://formsubmit.co/walter.bertelli@gmail.com");
+          form.setAttribute("method", "POST");
+          form.submit();
         },
         onConsentFailure: function (err) {
-          console.error("Consent failure:", err);
-          alert("⚠️ Falha ao registrar consentimento. Verifique os dados.");
+          console.error("❌ Consentimento falhou:", err);
+          alert("Erro ao registrar consentimento.");
         }
       });
 
-      // 2. Intercepta envio do formulário
-      form.addEventListener('submit', function (e) {
+      // Intercepta o submit padrão e deixa o SDK cuidar
+      form.addEventListener("submit", function (e) {
         e.preventDefault();
-
-        // Evita submit duplo
-        if (sdkReady) return;
-
-        // Aciona o fluxo do SDK
         FormConsentSDK.submit();
       });
     });
