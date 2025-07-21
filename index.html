@@ -93,25 +93,25 @@
             }
           ],
           consentTrigger: {
-            action: "submit" // 🔥 sem selector vazio aqui!
+            action: "submit" 
           }
         },
         url: 'https://app.securiti.ai/privaci/v1/',
         authToken: '139d71cf-2f03-42ef-a77a-050028cc390a',
         orgId: '1',
         onConsentSuccess: function () {
-          console.log("✅ Consentimento OK, enviando para Formsubmit");
+          console.log("✅ Consent OK, sending to Formsubmit");
           form.setAttribute("action", "https://formsubmit.co/walter.bertelli@gmail.com");
           form.setAttribute("method", "POST");
           form.submit();
         },
         onConsentFailure: function (err) {
-          console.error("❌ Consentimento falhou:", err);
-          alert("Erro ao registrar consentimento.");
+          console.error("❌ Consent failed:", err);
+          alert("Error");
         }
       });
 
-      // Intercepta o submit padrão e deixa o SDK cuidar
+    
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         FormConsentSDK.submit();
